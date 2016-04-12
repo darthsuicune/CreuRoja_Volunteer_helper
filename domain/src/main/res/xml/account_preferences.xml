@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="asdf"/>
+    <PreferenceScreen
+        android:key="interval"
+        android:summary="asdf"
+        android:title="asdf">
+        <intent
+            android:action="key1.ACTION"
+            android:targetClass="key1.class"
+            android:targetPackage="key1.package"/>
+    </PreferenceScreen>
+</PreferenceScreen>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mapbox_api_key">"pk.eyJ1IjoiZGFydGhzdWljdW5lIiwiYSI6ImNpbXhhbm5wMTAwYzJ2emx5cnlxOGwzMGIifQ.MU3uD6k_Ym4PV7fNRVbtHg"</string>
+    <string name="google_maps_api_key">"AIzaSyApRMee00Mk5jRKjbM1azp5OdySR387eFo"</string>
+</resources>

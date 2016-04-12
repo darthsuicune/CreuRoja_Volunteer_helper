@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Volunteer helper</string>
+    <string name="action_log_in">Log in</string>
+    <string name="action_log_in_short">Log in</string>
+    <string name="prompt_password">Password</string>
+    <string name="prompt_email">Email</string>
+    <string name="login_progress_logging_in">Logging in</string>
+    <string name="login_notice">Warning, you need to be a volunteer in the Red Cross Barcelona to be able to access this application. Request your login data there.</string>
+    <string name="login_activity_title">Login</string>
+    <string name="error_username_too_short">The username is too short</string>
+    <string name="error_invalid_password">This password is invalid, please fix.</string>
+    <string name="no_available_locations">No available locations</string>
+    <string name="view_as_map_box">View in Mapbox</string>
+    <string name="view_as_map_google">View on Google Maps</string>
+    <string name="view_as_list">View as list</string>
+</resources>

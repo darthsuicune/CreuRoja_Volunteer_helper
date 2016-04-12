@@ -1,0 +1,51 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+    defaultConfig {
+        applicationId "net.creuroja.android.volunteerhelper"
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 29
+        versionName "2.9"
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    compile project(':domain')
+    def deps = rootProject.ext.runtime
+    apt deps.daggerCompiler
+    provided deps.javaxAnnotation
+    compile(deps.mapbox){
+        transitive = true
+    }
+    compile deps.googleMaps
+    compile deps.mapsUtils
+    compile deps.design
+    compile deps.cardView
+    compile deps.butterKnife
+    compile deps.picasso
+
+    def testDeps = rootProject.ext.test
+    androidTestCompile(testDeps.espressoContrib) {
+        exclude group: "com.android.support", module: "appcompat"
+        exclude group: "com.android.support", module: "support-v4"
+        exclude group: "com.android.support", module: "design"
+        exclude module: "recyclerview-v7"
+    }
+    androidTestCompile testDeps.espressoIntents
+    androidTestCompile testDeps.dexmakerMockito
+    androidTestCompile testDeps.dexmakerDx
+    androidTestCompile testDeps.annotations
+}

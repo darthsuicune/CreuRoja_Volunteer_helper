@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    def deps = rootProject.ext.runtime
+    apt deps.daggerCompiler
+    apt deps.ollieCompiler
+    provided deps.javaxAnnotation
+    compile deps.dagger
+    compile deps.ollie
+    compile deps.location
+    compile deps.retrofit
+    compile deps.retrofitGson
+
+    def testDeps = rootProject.ext.test
+    testCompile testDeps.okhttpLogger
+    testCompile testDeps.junit
+    testCompile testDeps.mockito
+
+}

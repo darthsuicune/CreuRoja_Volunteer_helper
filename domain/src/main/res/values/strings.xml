@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Domain</string>
+    <string name="error_connection">Error happened during the connection. Make sure you have a working internet connection and try again.</string>
+    <string name="error_forbidden">Your user account isn\'t authorized to perform such action. Please contact the system administrator</string>
+    <string name="error_not_found">The server couldn\'t find the requested service</string>
+    <string name="error_internal">The server found an internal error. Please try again later.</string>
+    <string name="error_unknown">Unknown error happened with the server. Please contact the server administration.</string>
+</resources>
