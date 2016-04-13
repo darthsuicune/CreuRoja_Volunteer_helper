@@ -22,8 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class CreuRojaEndPointTest {
-	public static final String TEST_SERVER = "https://creuroja.net";
-	public static final String TEST_IP_SERVER = "http://52.16.178.185";
 	public static final String LOCAL_SERVER = "http://localhost/rails/";
 	public static final String EMAIL = "usuario@prueba.com";
 	public static final String PASS = "123456";
@@ -31,24 +29,27 @@ public class CreuRojaEndPointTest {
 	CreuRojaEndPoint endPoint;
 
 	@Before public void setUp() throws Exception {
-		HttpLoggingInterceptor logger =
-				new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-					@Override public void log(String message) {
-						System.out.println(("OkHttpLogging: " + message));
-					}
-				});
+		Retrofit retrofit = getRetrofitEndPoint();
+		endPoint = retrofit.create(CreuRojaEndPoint.class);
+	}
+
+	public static Retrofit getRetrofitEndPoint() {HttpLoggingInterceptor logger =
+			new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+				@Override public void log(String message) {
+					System.out.println(("OkHttpLogging: " + message));
+				}
+			});
 		logger.setLevel(HttpLoggingInterceptor.Level.BODY);
 		GsonConverterFactory gson = GsonConverterFactory.create(new GsonBuilder()
 				.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
 				.create());
 		OkHttpClient client = new OkHttpClient.Builder().addInterceptor(logger).build();
-		Retrofit retrofit =
-				new Retrofit.Builder()
-						.baseUrl(TEST_SERVER)
+		return new Retrofit.Builder()
+						.baseUrl(LOCAL_SERVER)
 						.addConverterFactory(gson)
 						.client(client)
 						.build();
-		endPoint = retrofit.create(CreuRojaEndPoint.class);
+
 	}
 
 	@Test public void testLogin() throws Exception {

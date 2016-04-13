@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import net.creuroja.android.volunteerhelper.domain.dagger.AccountManagerModule;
 import net.creuroja.android.volunteerhelper.domain.dagger.DaggerSyncServiceComponent;
@@ -22,7 +21,6 @@ public class SyncService extends Service {
 
 	@Override public void onCreate() {
 		super.onCreate();
-		Log.d("CRLOL", "Inside the service");
 		component = DaggerSyncServiceComponent.builder()
 				.syncServiceModule(new SyncServiceModule(this))
 				.sharedPreferencesModule(new SharedPreferencesModule(this))
@@ -30,13 +28,11 @@ public class SyncService extends Service {
 				.build();
 
 		synchronized (syncAdapterLock) {
-			Log.d("CRLOL", "Inside the synchronized service");
 			component.inject(this);
 		}
 	}
 
 	@Nullable @Override public IBinder onBind(Intent intent) {
-		Log.d("CRLOL", "Inside the binding service");
 		return syncAdapter.getSyncAdapterBinder();
 	}
 }

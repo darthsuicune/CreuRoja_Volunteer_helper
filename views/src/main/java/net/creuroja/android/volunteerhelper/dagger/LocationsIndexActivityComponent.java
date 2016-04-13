@@ -3,7 +3,6 @@ package net.creuroja.android.volunteerhelper.dagger;
 
 import net.creuroja.android.volunteerhelper.domain.dagger.AccountManagerModule;
 import net.creuroja.android.volunteerhelper.domain.dagger.SharedPreferencesModule;
-import net.creuroja.android.volunteerhelper.domain.locations.LocationsIndexController;
 import net.creuroja.android.volunteerhelper.locations.list.LocationsIndexActivity;
 
 import dagger.Component;
@@ -12,6 +11,4 @@ import dagger.Component;
 					  SharedPreferencesModule.class})
 public interface LocationsIndexActivityComponent {
 	void inject(LocationsIndexActivity activity);
-
-	LocationsIndexController controller();
 }

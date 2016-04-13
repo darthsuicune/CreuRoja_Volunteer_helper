@@ -10,6 +10,9 @@ public enum LocationType {
 	}
 
 	public static LocationType fromValue(String value) {
+		if(value == null) {
+			return TERRESTRE;
+		}
 		switch(value) {
 			case "asamblea":
 				return ASAMBLEA;

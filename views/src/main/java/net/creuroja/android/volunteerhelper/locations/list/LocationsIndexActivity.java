@@ -28,14 +28,13 @@ import butterknife.ButterKnife;
 
 public class LocationsIndexActivity extends AppCompatActivity
 		implements LocationsIndexActivityInterface {
-
 	private static final String TAG_HOLDER = "holder";
 	private static final String TAG_PRESENTER = "presenter";
+
 	LocationsIndexActivityComponent component;
 
+	@Inject LocationsIndexController controller;
 	@Inject AccountHelper accountHelper;
-
-	LocationsIndexController controller;
 
 	@Bind(R.id.toolbar) Toolbar toolbar;
 
@@ -58,7 +57,8 @@ public class LocationsIndexActivity extends AppCompatActivity
 			component = DaggerLocationsIndexActivityComponent.builder()
 					.accountManagerModule(new AccountManagerModule(this))
 					.sharedPreferencesModule(new SharedPreferencesModule(this))
-					.locationsIndexActivityModule(new LocationsIndexActivityModule(this)).build();
+					.locationsIndexActivityModule(new LocationsIndexActivityModule(this))
+					.build();
 			component.inject(this);
 		}
 	}
@@ -67,7 +67,6 @@ public class LocationsIndexActivity extends AppCompatActivity
 		setContentView(R.layout.activity_locations_index);
 		ButterKnife.bind(this);
 		setSupportActionBar(toolbar);
-		controller = component.controller();
 		controller.viewLocations();
 	}
 
