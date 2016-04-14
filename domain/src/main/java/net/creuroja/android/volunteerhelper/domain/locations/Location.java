@@ -38,34 +38,4 @@ public class Location extends Model {
 	public List<VolunteerService> services;
 
 	public Location() {}
-
-	public Location(LocationsResponse original) {
-		this.remoteId = original.id;
-		this.name = original.name;
-		this.description = original.description;
-		this.address = original.address;
-		this.phone = original.phone;
-		this.latitude = Double.parseDouble(original.latitude);
-		this.longitude = Double.parseDouble(original.longitude);
-		this.type = LocationType.fromValue(original.locationType);
-		this.active = original.active;
-		this.updatedAt = original.updatedAt;
-		this.services = original.activeServices;
-	}
-
-	public ContentValues asValues() {
-		ContentValues values = new ContentValues(15);
-		values.put(_ID, id);
-		values.put(REMOTE_ID, remoteId);
-		values.put(LOCATION_NAME, name);
-		values.put(DESCRIPTION, description);
-		values.put(ADDRESS, address);
-		values.put(PHONE, phone);
-		values.put(LATITUDE, latitude);
-		values.put(LONGITUDE, longitude);
-		values.put(LOCATION_TYPE, type.value);
-		values.put(ACTIVE, active);
-		values.put(UPDATED_AT, updatedAt);
-		return values;
-	}
 }

@@ -29,9 +29,10 @@ public class MapboxListPresenter extends SupportMapFragment
 		implements LocationsPresenter, OnMapReadyCallback {
 
 	MapboxMap map;
-	Map<Location, Marker> markers;
+	Map<Location, Marker> markers = new HashMap<>();
 	LocationsIndexActivityInterface activity;
 	MarkerListener listener = new MarkerListener();
+	private List<Location> locations;
 
 	public static MapboxListPresenter newInstance(String apikey, double initialLat,
 												  double initialLong, int initialZoom) {
@@ -61,6 +62,10 @@ public class MapboxListPresenter extends SupportMapFragment
 	@Override public void onMapReady(MapboxMap mapboxMap) {
 		map = mapboxMap;
 		map.setOnMarkerClickListener(listener);
+		if (locations != null) {
+			onListUpdated(locations);
+			locations = null;
+		}
 	}
 
 	@Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,6 +76,10 @@ public class MapboxListPresenter extends SupportMapFragment
 	}
 
 	@Override public void onListUpdated(List<Location> locations) {
+		if(map == null) {
+			this.locations = locations;
+			return;
+		}
 		for (Location location : locations) {
 			Marker marker;
 			if (markers.containsKey(location)) {
@@ -79,6 +88,8 @@ public class MapboxListPresenter extends SupportMapFragment
 				map.updateMarker(marker);
 			} else {
 				MarkerOptions options = new MarkerOptions();
+				options.position(new LatLng(location.latitude, location.longitude));
+				options.title(location.name);
 				marker = map.addMarker(options);
 				markers.put(location, marker);
 			}

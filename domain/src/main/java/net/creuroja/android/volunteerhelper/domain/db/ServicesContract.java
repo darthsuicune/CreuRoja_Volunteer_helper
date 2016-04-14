@@ -1,11 +1,10 @@
 package net.creuroja.android.volunteerhelper.domain.db;
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import net.creuroja.android.volunteerhelper.domain.locations.Location;
-
-import ollie.OllieProvider;
+import net.creuroja.android.volunteerhelper.domain.sync.SyncAdapter;
 
 public class ServicesContract {
 	public static final class Locations implements BaseColumns {
@@ -20,8 +19,13 @@ public class ServicesContract {
 		public static final String UPDATED_AT = "updated_at";
 		public static final String ACTIVE = "active";
 		public static final String LOCATION_TYPE = "location_type";
-		public static final Uri URI = OllieProvider.createUri(Location.class);
+		public static final Uri URI = new Uri.Builder()
+						.scheme(ContentResolver.SCHEME_CONTENT)
+						.authority(SyncAdapter.AUTHORITY)
+						.path(TABLE_NAME)
+						.build();
 	}
+
 	public static final class Services implements BaseColumns {
 		public static final String TABLE_NAME = "services";
 	}

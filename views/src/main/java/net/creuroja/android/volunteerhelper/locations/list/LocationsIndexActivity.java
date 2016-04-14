@@ -1,6 +1,7 @@
 package net.creuroja.android.volunteerhelper.locations.list;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -93,7 +94,7 @@ public class LocationsIndexActivity extends AppCompatActivity
 	}
 
 	@Override public void displayLocationDetails(Location location) {
-
+		Snackbar.make(toolbar, location.name, Snackbar.LENGTH_INDEFINITE).show();
 	}
 
 	@Override public void searchForLocation(String string) {

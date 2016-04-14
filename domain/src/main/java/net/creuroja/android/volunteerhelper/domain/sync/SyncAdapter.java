@@ -46,7 +46,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			Response<List<LocationsResponse>> response =
 					performer.initSync(authToken, lastUpdateTime);
 			if (performer.isValidResponse(response)) {
-				performer.storeUpdates(response.body(), resolver);
+				performer.storeUpdates(response.body(), getContext().getContentResolver());
 				prefs.edit().putString(LAST_UPDATE_TIME, currentTime).apply();
 			} else {
 				performer.logError(response);

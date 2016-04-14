@@ -1,15 +1,16 @@
 package net.creuroja.android.volunteerhelper.domain.sync;
 
-import android.content.ContentProviderClient;
 import android.content.ContentProviderOperation;
-import android.net.Uri;
+import android.content.ContentResolver;
 import android.os.Build;
+import android.support.test.runner.AndroidJUnit4;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import net.creuroja.android.volunteerhelper.domain.CreuRojaEndPoint;
-import net.creuroja.android.volunteerhelper.domain.CreuRojaEndPointTest;
 import net.creuroja.android.volunteerhelper.domain.locations.LocationsResponse;
 
 import org.hamcrest.Description;
@@ -17,24 +18,48 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-public class SyncPerformerTest {
+@RunWith(AndroidJUnit4.class) public class SyncPerformerTest {
+	public static final String LOCAL_SERVER = "https://creuroja.net/";
+	public static final String EMAIL = "usuario@prueba.com";
+	public static final String PASS = "123456";
+
 	SyncPerformer performer;
 	CreuRojaEndPoint server;
 
+	public static Retrofit getRetrofitEndPoint() {
+		HttpLoggingInterceptor logger =
+				new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
+					@Override public void log(String message) {
+						System.out.println(("OkHttpLogging: " + message));
+					}
+				});
+		logger.setLevel(HttpLoggingInterceptor.Level.BODY);
+		GsonConverterFactory gson = GsonConverterFactory.create(new GsonBuilder()
+				.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create());
+		OkHttpClient client = new OkHttpClient.Builder().addInterceptor(logger).build();
+		return new Retrofit.Builder().baseUrl(LOCAL_SERVER).addConverterFactory(gson).client(client)
+				.build();
+	}
+
 	@Before public void setUp() throws Exception {
-		server = CreuRojaEndPointTest.getRetrofitEndPoint().create(CreuRojaEndPoint.class);
+		server = getRetrofitEndPoint().create(CreuRojaEndPoint.class);
 		performer = new SyncPerformer(server);
 	}
 
@@ -46,17 +71,14 @@ public class SyncPerformerTest {
 	}
 
 	private String obtainToken() throws IOException {
-		String user = "usuario@prueba.com";
-		String password = "123456";
-		return server.login(user, password).execute().body().token;
+		return server.login(EMAIL, PASS).execute().body().token;
 	}
 
 	@Test public void testStoreUpdates() throws Exception {
 		List<LocationsResponse> responseList = createSomeLocationsResponse();
-		ContentProviderClient client = mock(ContentProviderClient.class);
-		Uri uri = mock(Uri.class);
-		performer.storeUpdates(responseList, client, uri);
-		verify(client).applyBatch(argThat(matchesAlistWith(10, 2)));
+		ContentResolver client = mock(ContentResolver.class);
+		performer.storeUpdates(responseList, client);
+		verify(client).applyBatch(SyncAdapter.AUTHORITY, argThat(matchesAlistWith(10, 2)));
 	}
 
 	private Matcher<ArrayList<ContentProviderOperation>> matchesAlistWith(final int updates,

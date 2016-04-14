@@ -45,7 +45,7 @@ public class LoginControllerImpl implements LoginController {
 			String token = response.body().token;
 			Account account = accountHelper.createAccount(username, password, token);
 			ContentResolver.requestSync(account, SyncAdapter.AUTHORITY, Bundle.EMPTY);
-			ContentResolver.setSyncAutomatically(account, SyncAdapter.AUTHORITY, true);
+			ContentResolver.addPeriodicSync(account, SyncAdapter.AUTHORITY, Bundle.EMPTY, 3600);
 			activity.successfulLogin(accountHelper.asBundle(username, password, token));
 		} else {
 			int errorMessageResId;

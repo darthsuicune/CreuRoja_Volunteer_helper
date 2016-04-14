@@ -1,10 +1,7 @@
 package net.creuroja.android.volunteerhelper.domain.sync;
 
-import android.content.ContentProviderClient;
-import android.content.ContentProviderOperation;
-import android.content.OperationApplicationException;
+import android.content.ContentResolver;
 import android.net.Uri;
-import android.os.RemoteException;
 import android.util.Log;
 
 import net.creuroja.android.volunteerhelper.domain.CreuRojaEndPoint;
@@ -13,11 +10,11 @@ import net.creuroja.android.volunteerhelper.domain.locations.Location;
 import net.creuroja.android.volunteerhelper.domain.locations.LocationsResponse;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import ollie.query.Select;
 import retrofit2.Response;
 
 public class SyncPerformer {
@@ -39,31 +36,23 @@ public class SyncPerformer {
 		return response.isSuccess();
 	}
 
-	public void storeUpdates(List<LocationsResponse> response, ContentProviderClient resolver) {
-		storeUpdates(response, resolver, ServicesContract.Locations.URI);
-	}
-
-	public void storeUpdates(List<LocationsResponse> response, ContentProviderClient resolver,
-							 Uri uri) {
-		ArrayList<ContentProviderOperation> ops = new ArrayList<>();
-		for (int i = 0, len = response.size(); i < len; i++) {
-			Location location = new Location(response.get(i));
+	public void storeUpdates(List<LocationsResponse> response, ContentResolver cr) {
+		Uri uri = ServicesContract.Locations.URI;
+		for (LocationsResponse location : response) {
 			if (location.active) {
-				ops.add(ContentProviderOperation.newUpdate(uri)
-						.withValues(location.asValues()).build());
+				if (Select.from(Location.class)
+							.where(ServicesContract.Locations.REMOTE_ID + "=?", location.id).fetch()
+							.size() > 0) {
+					cr.update(uri, location.asValues(), ServicesContract.Locations.REMOTE_ID + "=?",
+							new String[] {Integer.toString(location.id)});
+				} else {
+					cr.insert(uri, location.asValues());
+				}
 			} else {
-				ops.add(ContentProviderOperation.newDelete(uri)
-						.withSelection(ServicesContract.Locations._ID + "=?",
-								new String[]{Long.toString(location.id)}).build());
+				cr.delete(uri, ServicesContract.Locations._ID + "=?",
+						new String[]{Long.toString(location.id)});
 			}
 		}
-		//Attempt to save and fail silently.
-		try {
-			resolver.applyBatch(ops);
-		} catch (RemoteException | OperationApplicationException e) {
-			e.printStackTrace();
-		}
-
 	}
 
 	public void logError(Response<List<LocationsResponse>> response) throws IOException {
@@ -74,6 +63,5 @@ public class SyncPerformer {
 			Log.d(SYNC_ADAPTER_TAG,
 					"Unauthorized. Should remove all stored data and force a new login");
 		}
-
 	}
 }
